@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Store - Products</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="orders.html">Orders</a>
+    </nav>
+
+    <main>
+        <h2>Products</h2>
+        <input type="text" id="productName" placeholder="Product Name">
+        <input type="number" id="productPrice" placeholder="Price">
+        <input type="number" id="productQuantity" placeholder="Quantity">
+        <button onclick="addProduct()">Add Product</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="productTable"></tbody>
+        </table>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
