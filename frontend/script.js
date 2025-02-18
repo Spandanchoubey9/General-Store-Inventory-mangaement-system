@@ -1,83 +1,69 @@
-document.addEventListener("DOMContentLoaded", loadProducts);
+const backendUrl = "http://localhost:5000";
 
-// Function to add product to the table
-function addProduct() {
-    let name = document.getElementById("productName").value.trim();
-    let price = document.getElementById("productPrice").value.trim();
-    let quantity = document.getElementById("productQuantity").value.trim();
-
-    if (name === "" || price === "" || quantity === "") {
-        alert("Please fill all fields!");
-        return;
-    }
-
+// Fetch and display products
+async function loadProducts() {
+    let response = await fetch(`${backendUrl}/products`);
+    let products = await response.json();
     let table = document.getElementById("productTable");
-    let row = table.insertRow();
-    row.innerHTML = `
-        <td>${name}</td>
-        <td>$${price}</td>
-        <td>${quantity}</td>
-        <td><button class="delete-btn btn btn-danger btn-sm" onclick="deleteProduct(this)">Delete</button></td>
-    `;
-
-    saveProduct({ name, price, quantity });
-
-    // Clear input fields
-    document.getElementById("productName").value = "";
-    document.getElementById("productPrice").value = "";
-    document.getElementById("productQuantity").value = "";
-}
-
-// Function to delete product from the table
-function deleteProduct(btn) {
-    let row = btn.parentElement.parentElement;
-    let productName = row.cells[0].textContent;
-
-    row.remove();
-    removeProduct(productName);
-}
-
-// Function to search products
-function searchProducts() {
-    let query = document.getElementById("searchBar").value.toLowerCase();
-    let rows = document.querySelectorAll("#productTable tr");
-
-    rows.forEach(row => {
-        let productName = row.cells[0]?.textContent.toLowerCase();
-        if (productName.includes(query)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
-
-// Function to save products to localStorage
-function saveProduct(product) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    products.push(product);
-    localStorage.setItem("products", JSON.stringify(products));
-}
-
-// Function to remove product from localStorage
-function removeProduct(name) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    products = products.filter(product => product.name !== name);
-    localStorage.setItem("products", JSON.stringify(products));
-}
-
-// Function to load products from localStorage
-function loadProducts() {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let table = document.getElementById("productTable");
-
+    table.innerHTML = "";
     products.forEach(product => {
         let row = table.insertRow();
         row.innerHTML = `
             <td>${product.name}</td>
             <td>$${product.price}</td>
             <td>${product.quantity}</td>
-            <td><button class="delete-btn btn btn-danger btn-sm" onclick="deleteProduct(this)">Delete</button></td>
+            <td><button onclick="deleteProduct('${product.name}')">Delete</button></td>
         `;
     });
 }
+
+// Add product
+async function addProduct() {
+    let name = document.getElementById("productName").value;
+    let price = document.getElementById("productPrice").value;
+    let quantity = document.getElementById("productQuantity").value;
+
+    await fetch(`${backendUrl}/products`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price, quantity })
+    });
+
+    loadProducts();
+}
+
+// Place order
+async function placeOrder() {
+    let customer = document.getElementById("customerName").value;
+    let product = document.getElementById("orderedProduct").value;
+    let quantity = document.getElementById("orderedQuantity").value;
+
+    await fetch(`${backendUrl}/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customer, product, quantity })
+    });
+
+    loadOrders();
+}
+
+// Load orders
+async function loadOrders() {
+    let response = await fetch(`${backendUrl}/orders`);
+    let orders = await response.json();
+    let table = document.getElementById("orderTable");
+    table.innerHTML = "";
+    orders.forEach(order => {
+        let row = table.insertRow();
+        row.innerHTML = `
+            <td>${order.customer}</td>
+            <td>${order.product}</td>
+            <td>${order.quantity}</td>
+        `;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.getElementById("productTable")) loadProducts();
+    if (document.getElementById("orderTable")) loadOrders();
+});
