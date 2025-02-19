@@ -1,127 +1,150 @@
+// Load inventory from localStorage
+function loadInventory() {
+    return JSON.parse(localStorage.getItem("inventory")) || [];
+}
+
+// Save inventory to localStorage
+function saveInventory(inventory) {
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+}
+
+// Load orders from localStorage
+function loadOrders() {
+    return JSON.parse(localStorage.getItem("orders")) || [];
+}
+
+// Save orders to localStorage
+function saveOrders(orders) {
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+
 // Function to add product to inventory
 function addProduct() {
     let name = document.getElementById("productName").value.trim();
-    let price = document.getElementById("productPrice").value.trim();
-    let quantity = document.getElementById("productQuantity").value.trim();
+    let price = parseFloat(document.getElementById("productPrice").value);
+    let quantity = parseInt(document.getElementById("productQuantity").value);
 
-    if (name === "" || price === "" || quantity === "") {
-        alert("Please fill all fields!");
+    if (!name || isNaN(price) || isNaN(quantity) || quantity <= 0) {
+        alert("Please enter valid product details!");
         return;
     }
 
-    let table = document.getElementById("productTable");
-    let row = table.insertRow();
-    row.innerHTML = `
-        <td>${name}</td>
-        <td>$${price}</td>
-        <td>${quantity}</td>
-        <td><button class="delete-btn" onclick="deleteProduct(this)">Delete</button></td>
-    `;
+    let inventory = loadInventory();
+    let existingProduct = inventory.find(p => p.name.toLowerCase() === name.toLowerCase());
 
-    // Save product in localStorage
-    saveProduct({ name, price, quantity });
+    if (existingProduct) {
+        existingProduct.quantity += quantity;  // Update existing product quantity
+    } else {
+        inventory.push({ name, price, quantity });
+    }
 
-    // Clear input fields
+    saveInventory(inventory);
+    displayInventory();
     document.getElementById("productName").value = "";
     document.getElementById("productPrice").value = "";
     document.getElementById("productQuantity").value = "";
 }
 
-// Function to delete product from inventory
-function deleteProduct(btn) {
-    let row = btn.parentElement.parentElement;
-    let productName = row.cells[0].innerText;
-    row.remove();
-    removeProduct(productName);
-}
+// Function to display inventory
+function displayInventory() {
+    let inventory = loadInventory();
+    let tableBody = document.getElementById("productTable");
+    if (!tableBody) return; // Prevent error if table is not present
 
-// Function to save products in localStorage
-function saveProduct(product) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    products.push(product);
-    localStorage.setItem("products", JSON.stringify(products));
-}
-
-// Function to remove product from localStorage
-function removeProduct(name) {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    products = products.filter(product => product.name !== name);
-    localStorage.setItem("products", JSON.stringify(products));
-}
-
-// Function to load products from localStorage
-function loadProducts() {
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let table = document.getElementById("productTable");
-
-    table.innerHTML = ""; // Clear existing table data
-    products.forEach(product => {
-        let row = table.insertRow();
+    tableBody.innerHTML = "";
+    inventory.forEach((product, index) => {
+        let row = tableBody.insertRow();
         row.innerHTML = `
             <td>${product.name}</td>
-            <td>$${product.price}</td>
+            <td>$${product.price.toFixed(2)}</td>
             <td>${product.quantity}</td>
-            <td><button class="delete-btn" onclick="deleteProduct(this)">Delete</button></td>
+            <td><button class="delete-btn btn btn-danger" onclick="deleteProduct(${index})">Delete</button></td>
         `;
     });
 }
 
-// Function to search products
-function searchProducts() {
-    let searchQuery = document.getElementById("searchBar").value.toLowerCase();
-    let rows = document.querySelectorAll("#productTable tr");
+// Function to delete a product from inventory
+function deleteProduct(index) {
+    let inventory = loadInventory();
+    inventory.splice(index, 1);
+    saveInventory(inventory);
+    displayInventory();
+}
 
-    rows.forEach(row => {
-        let productName = row.cells[0].innerText.toLowerCase();
-        if (productName.includes(searchQuery)) {
-            row.style.display = "";
-        } else {
-            row.style.display = "none";
+// 🔹 **Place Order with Stock Validation**
+function placeOrder() {
+    let orderName = document.getElementById("orderName").value.trim();
+    let orderQuantity = parseInt(document.getElementById("orderQuantity").value);
+
+    if (!orderName || isNaN(orderQuantity) || orderQuantity <= 0) {
+        alert("Please enter valid order details!");
+        return;
+    }
+
+    let inventory = loadInventory();
+    let orders = loadOrders();
+    let product = inventory.find(p => p.name.toLowerCase() === orderName.toLowerCase());
+
+    if (!product) {
+        alert("Product not found in inventory!");
+        return;
+    } else if (product.quantity < orderQuantity) {
+        alert("Insufficient stock available!");
+        return;
+    } else {
+        product.quantity -= orderQuantity;
+        orders.push({ name: orderName, quantity: orderQuantity, status: "Confirmed" });
+        saveInventory(inventory);
+        saveOrders(orders);
+        displayInventory();
+        displayOrders();
+        alert(`Order placed successfully for ${orderQuantity} ${orderName}(s)!`);
+    }
+
+    document.getElementById("orderName").value = "";
+    document.getElementById("orderQuantity").value = "";
+}
+
+// Function to display orders
+function displayOrders() {
+    let orders = loadOrders();
+    let tableBody = document.getElementById("orderTable");
+    if (!tableBody) return; // Prevent error if table is not present
+
+    tableBody.innerHTML = "";
+    orders.forEach(order => {
+        let row = tableBody.insertRow();
+        row.innerHTML = `
+            <td>${order.name}</td>
+            <td>${order.quantity}</td>
+            <td>${order.status}</td>
+        `;
+    });
+}
+
+// Function to search products in inventory
+function searchProducts() {
+    let searchQuery = document.getElementById("searchBar").value.trim().toLowerCase();
+    let inventory = loadInventory();
+    let tableBody = document.getElementById("productTable");
+    if (!tableBody) return; // Prevent error if table is not present
+
+    tableBody.innerHTML = "";
+    inventory.forEach((product, index) => {
+        if (product.name.toLowerCase().includes(searchQuery)) {
+            let row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${product.name}</td>
+                <td>$${product.price.toFixed(2)}</td>
+                <td>${product.quantity}</td>
+                <td><button class="delete-btn btn btn-danger" onclick="deleteProduct(${index})">Delete</button></td>
+            `;
         }
     });
 }
 
-// Function to place an order
-function placeOrder() {
-    let orderName = document.getElementById("orderProductName").value.trim();
-    let orderQuantity = parseInt(document.getElementById("orderQuantity").value.trim());
-
-    if (orderName === "" || isNaN(orderQuantity) || orderQuantity <= 0) {
-        alert("Enter a valid product name and quantity!");
-        return;
-    }
-
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let productIndex = products.findIndex(product => product.name.toLowerCase() === orderName.toLowerCase());
-
-    if (productIndex === -1) {
-        alert("Product not found in inventory!");
-        return;
-    }
-
-    let availableQuantity = parseInt(products[productIndex].quantity);
-    if (availableQuantity < orderQuantity) {
-        alert("Not enough stock available!");
-        return;
-    }
-
-    // Update inventory
-    products[productIndex].quantity = availableQuantity - orderQuantity;
-
-    if (products[productIndex].quantity === 0) {
-        products.splice(productIndex, 1); // Remove product if out of stock
-    }
-
-    localStorage.setItem("products", JSON.stringify(products));
-    alert(`Order placed successfully!`);
-    loadProducts();
-}
-
-// Function to toggle navbar in mobile view
-function toggleNavbar() {
-    let navLinks = document.getElementById("navLinks");
-    navLinks.classList.toggle("active");
-}
-
-// Load inventory when the page loads
-document.addEventListener("DOMContentLoaded", loadProducts);
+// Load data when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    displayInventory();
+    displayOrders();
+});
