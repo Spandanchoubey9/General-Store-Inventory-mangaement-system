@@ -3,21 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>General Store - Home</title>
+    <title>General Store Inventory</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="products.html">Products</a>
-        <a href="orders.html">Orders</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">General Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="orders.html">Orders</a></li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    <main>
-        <h1>Welcome to the General Store</h1>
-        <p>Manage your inventory and customer orders efficiently.</p>
-    </main>
+    <!-- Main Section -->
+    <div class="container mt-5 text-center">
+        <h1 class="fw-bold">Welcome to General Store Inventory</h1>
+        <p class="lead">Manage your products and orders efficiently</p>
+        <a href="products.html" class="btn btn-primary btn-lg mt-3">View Products</a>
+        <a href="orders.html" class="btn btn-secondary btn-lg mt-3">View Orders</a>
+    </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
