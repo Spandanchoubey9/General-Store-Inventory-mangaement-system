@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- 🔹 Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">General Store</a>
@@ -26,15 +26,21 @@
         </div>
     </nav>
 
-    <!-- Product Management Section -->
+    <!-- 🔹 Main Content -->
     <div class="container mt-5">
-        <h2 class="text-center">Manage Products</h2>
+        <h2 class="text-center">Product Inventory</h2>
 
-        <!-- Add Product Form -->
-        <div class="card p-4 shadow-sm">
-            <h4>Add a New Product</h4>
-            <div class="row g-3">
-                <div class="col-md-4">
+        <!-- 🟢 Search Bar -->
+        <div class="input-group mb-3">
+            <input type="text" id="searchBar" class="form-control" placeholder="Search products...">
+            <button class="btn btn-dark" onclick="searchProducts()">Search</button>
+        </div>
+
+        <!-- 🟢 Add New Product Section -->
+        <section class="add-product p-3 bg-light border rounded">
+            <h4>Add New Product</h4>
+            <div class="row">
+                <div class="col-md-3">
                     <input type="text" id="productName" class="form-control" placeholder="Product Name">
                 </div>
                 <div class="col-md-3">
@@ -43,16 +49,16 @@
                 <div class="col-md-3">
                     <input type="number" id="productQuantity" class="form-control" placeholder="Quantity">
                 </div>
-                <div class="col-md-2">
-                    <button class="btn btn-success w-100" onclick="addProduct()">Add</button>
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="addProduct()">Add Product</button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Product List -->
-        <div class="mt-4">
+        <!-- 🟢 Product List Table -->
+        <section class="inventory mt-4">
             <h4>Product List</h4>
-            <table class="table table-hover shadow-sm">
+            <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
                         <th>Name</th>
@@ -61,11 +67,20 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody id="productTable"></tbody>
+                <tbody id="productTable">
+                    <!-- Products will be added dynamically -->
+                </tbody>
             </table>
-        </div>
+        </section>
     </div>
 
-    <script src="script.js"></script>
+    <!-- 🔹 Footer -->
+    <footer class="bg-dark text-white text-center p-3 mt-4">
+        <p>&copy; 2025 General Store. All rights reserved.</p>
+    </footer>
+
+    <!-- ✅ Bootstrap JS for Navbar Fix -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script> <!-- ✅ Ensure this is correctly linked -->
 </body>
 </html>

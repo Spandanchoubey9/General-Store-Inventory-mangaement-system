@@ -1,69 +1,46 @@
-const backendUrl = "http://localhost:5000";
-
-// Fetch and display products
-async function loadProducts() {
-    let response = await fetch(`${backendUrl}/products`);
-    let products = await response.json();
-    let table = document.getElementById("productTable");
-    table.innerHTML = "";
-    products.forEach(product => {
-        let row = table.insertRow();
-        row.innerHTML = `
-            <td>${product.name}</td>
-            <td>$${product.price}</td>
-            <td>${product.quantity}</td>
-            <td><button onclick="deleteProduct('${product.name}')">Delete</button></td>
-        `;
-    });
-}
-
-// Add product
-async function addProduct() {
+// Function to add a new product
+function addProduct() {
     let name = document.getElementById("productName").value;
     let price = document.getElementById("productPrice").value;
     let quantity = document.getElementById("productQuantity").value;
 
-    await fetch(`${backendUrl}/products`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, price, quantity })
-    });
+    if (name === "" || price === "" || quantity === "") {
+        alert("Please fill all fields!");
+        return;
+    }
 
-    loadProducts();
+    let table = document.getElementById("productTable");
+    let row = table.insertRow();
+    row.innerHTML = `
+        <td>${name}</td>
+        <td>$${price}</td>
+        <td>${quantity}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteProduct(this)">Delete</button></td>
+    `;
+
+    // Clear input fields
+    document.getElementById("productName").value = "";
+    document.getElementById("productPrice").value = "";
+    document.getElementById("productQuantity").value = "";
 }
 
-// Place order
-async function placeOrder() {
-    let customer = document.getElementById("customerName").value;
-    let product = document.getElementById("orderedProduct").value;
-    let quantity = document.getElementById("orderedQuantity").value;
-
-    await fetch(`${backendUrl}/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer, product, quantity })
-    });
-
-    loadOrders();
+// Function to delete a product
+function deleteProduct(btn) {
+    let row = btn.parentElement.parentElement;
+    row.remove();
 }
 
-// Load orders
-async function loadOrders() {
-    let response = await fetch(`${backendUrl}/orders`);
-    let orders = await response.json();
-    let table = document.getElementById("orderTable");
-    table.innerHTML = "";
-    orders.forEach(order => {
-        let row = table.insertRow();
-        row.innerHTML = `
-            <td>${order.customer}</td>
-            <td>${order.product}</td>
-            <td>${order.quantity}</td>
-        `;
+// Function to search for products
+function searchProducts() {
+    let searchValue = document.getElementById("searchBar").value.toLowerCase();
+    let rows = document.querySelectorAll("#productTable tr");
+
+    rows.forEach(row => {
+        let name = row.cells[0].innerText.toLowerCase();
+        if (name.includes(searchValue)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
     });
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("productTable")) loadProducts();
-    if (document.getElementById("orderTable")) loadOrders();
-});
