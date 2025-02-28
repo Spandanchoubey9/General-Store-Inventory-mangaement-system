@@ -21,4 +21,4 @@ A Full-Stack Inventory Management System for general stores, built using **MERN 
 git clone https://github.com/abhikraj/general-store-inventory.git  
 cd general-store-inventory  
 npm install  
-npm start  .
+npm start
