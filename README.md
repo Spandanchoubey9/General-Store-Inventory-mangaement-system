@@ -6,8 +6,6 @@ A Full-Stack Inventory Management System for general stores, built using **MERN 
 ## 🚀 Features  
 ✅ Add, Edit, Delete, and View Products  
 ✅ Stock Management & Alerts  
-✅ Sales & Billing System  
-✅ Role-Based Authentication (Admin & Staff)  
 ✅ Reports & Dashboard  
 
 ## 🛠️ Tech Stack  

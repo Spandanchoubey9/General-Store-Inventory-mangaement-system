@@ -34,8 +34,8 @@ function updateAnalytics() {
         // Update metrics
         document.getElementById("totalOrders").textContent = metrics.totalOrders;
         document.getElementById("totalRevenue").textContent = `$${metrics.totalRevenue.toFixed(2)}`;
-        document.getElementById("avgOrderValue").textContent = `$${metrics.avgOrderValue.toFixed(2)}`;
-        document.getElementById("topProduct").textContent = metrics.topProduct;
+        document.getElementById("totalViews").textContent = metrics.totalViews;
+        document.getElementById("topViewed").textContent = metrics.topViewed;
         
         // Render charts
         renderSalesChart(orders);
@@ -76,15 +76,16 @@ function processAnalyticsData(startDate, endDate) {
 
     const totalRevenue = sortedProducts.reduce((sum, p) => sum + p.revenue, 0);
     const totalOrders = filteredOrders.length;
+    const inventoryViews = inventory.reduce((sum, item) => sum + (item.views || 0), 0);
+    const topViewedItem = inventory.slice().sort((a, b) => (b.views || 0) - (a.views || 0))[0] || null;
 
     return {
         metrics: {
             totalOrders,
             totalRevenue,
+            totalViews: inventoryViews,
             avgOrderValue: totalOrders > 0 ? totalRevenue / totalOrders : 0,
-            topProduct: sortedProducts[0] ? 
-                `${sortedProducts[0].displayName} (${sortedProducts[0].brand}) - $${sortedProducts[0].revenue.toFixed(2)}` : 
-                "No products sold"
+            topViewed: topViewedItem ? `${topViewedItem.name} (${topViewedItem.brand}) - ${topViewedItem.views || 0} views` : "No view data"
         },
         productsData: sortedProducts,
         orders: filteredOrders

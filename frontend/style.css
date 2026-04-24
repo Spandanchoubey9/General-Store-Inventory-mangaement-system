@@ -496,3 +496,46 @@ body {
     padding: 5px 10px;
     border-radius: 4px;
 }
+
+/* Login and auth page improvements */
+body.login-page {
+    background: linear-gradient(135deg, #f2f7ff 0%, #ffffff 100%);
+}
+
+.card.shadow-sm {
+    border: none;
+}
+
+.btn-outline-secondary {
+    border-color: #ced4da;
+}
+
+.alert.alert-info {
+    background-color: rgba(13, 110, 253, 0.08);
+    border-color: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+}
+
+.auth-note {
+    background-color: rgba(255,255,255,0.7);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.navbar .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: #fff !important;
+}
+
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    .stat-card {
+        padding: 1.5rem;
+    }
+}
